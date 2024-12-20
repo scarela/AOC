@@ -97,42 +97,16 @@ function part2(grid: string[][]) {
   const n = grid[0].length;
   let result = 0;
 
-  const getUp = (r: number, c: number) =>
-    [grid[r - 1][c - 1], grid[r - 1][c + 1]] as const;
-  const getRight = (r: number, c: number) =>
-    [grid[r - 1][c + 1], grid[r + 1][c + 1]] as const;
-  const getDown = (r: number, c: number) =>
-    [grid[r + 1][c - 1], grid[r + 1][c + 1]] as const;
-  const getLeft = (r: number, c: number) =>
-    [grid[r - 1][c - 1], grid[r + 1][c - 1]] as const;
-
-  const cornerMatcher = (tuple: readonly [string, string], char: string) =>
-    tuple[0] === char && tuple[1] === char;
-
   for (let r = 0; r < m; r++) {
     for (let c = 0; c < n; c++) {
       if (r >= 1 && r <= m - 2 && c >= 1 && c <= n - 2 && grid[r][c] === "A") {
-        const up = getUp(r, c);
-        const down = getDown(r, c);
-        if (cornerMatcher(up, "S")) {
-          if (cornerMatcher(down, "M")) {
-            result++;
-            continue;
-          }
-        } else if (cornerMatcher(up, "M")) {
-          if (cornerMatcher(down, "S")) {
-            result++;
-            continue;
-          }
-        }
+        const posDiagonal = grid[r - 1][c - 1] + grid[r + 1][c + 1];
+        const negDiagonal = grid[r + 1][c - 1] + grid[r - 1][c + 1];
 
-        const left = getLeft(r, c);
-        const right = getRight(r, c);
-        if (cornerMatcher(left, "S")) {
-          result += +cornerMatcher(right, "M");
-        } else if (cornerMatcher(left, "M")) {
-          result += +cornerMatcher(right, "S");
-        }
+        result += +(
+          ["MS", "SM"].includes(posDiagonal) &&
+          ["MS", "SM"].includes(negDiagonal)
+        );
       }
     }
   }
