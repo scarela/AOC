@@ -4,7 +4,7 @@ const data = await file(resolveSync("./input", import.meta.dir)).text();
 // const data = await file(resolveSync("./input.test", import.meta.dir)).text();
 const lines = data.split('\n');
 const height = lines.length;
-const width = lines[0].split('').length;
+const width = lines[0].length;
 const antennas = lines.reduce((acc: { [key: string]: number[][] }, l, i) => {
   for (const match of l.matchAll(/(\d|\w)/g)) {
     if (!acc[match[0]]) acc[match[0]] = [];
