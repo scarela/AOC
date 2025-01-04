@@ -35,4 +35,4 @@ dayWrapper(() => data.split('\n')
 
     return sum + cards[currentCardName];
   }, 0)
-);
+, "Day 4 - part 2");

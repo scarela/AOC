@@ -58,4 +58,4 @@ dayWrapper(() => {
 
       return sum + (val1 * val2);
     }, 0)
-})
+}, "Day 3 - part 2")

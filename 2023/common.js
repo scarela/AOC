@@ -6,18 +6,16 @@ const isTesting = argv[2] === '-test';
 
 const data = isTesting ? null : readFileSync(inputFileName, 'utf-8');
 
-export const getNumbers = str => Array.from(str.matchAll(/(\d+)/g), m => +m[1]);
+export const getNumbers = str => [...str.match(/-?\d+/g)]//Array.from(str.matchAll(/(\d+)/g), m => +m[1]);
 
 export function useData(testData = null) {
   return { data: data ?? testData };
 }
 
-//TODO: do the testing
-export function dayWrapper(fn) {
+export function dayWrapper(fn, label) {
   if (typeof fn !== 'function') throw Error("Not a function");
 
   console.time("Processing...")
-  const result = fn();
-  console.log(`Result ${isTesting ? "[testing]:" : ":"}`, result);
+  console.log(`${label}${isTesting ? " [testing]:" : ":"}`, fn());
   console.timeEnd("Processing...")
 }

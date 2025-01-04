@@ -27,4 +27,4 @@ dayWrapper(() => data.split('\n')
 
     return sum + result;
   }, 0)
-)
+, "Day 4 - part 1")

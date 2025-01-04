@@ -16,4 +16,4 @@ dayWrapper(() => data.split("\n")
 
     return acc + +(n1 + n2);
   }, 0)
-);
+, "Day 1 - part 1");

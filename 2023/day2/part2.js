@@ -24,4 +24,4 @@ dayWrapper(() => data.split('\n')
     return sum + Object.values(localMax)
       .reduce((acc, max) => acc * max, 1);
   }, 0)
-);
+, "Day 2 - part 2");

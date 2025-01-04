@@ -74,4 +74,4 @@ dayWrapper(() => {
   })
 
   return Math.min(...seedsRanges.map(m => m[0]));
-})
+}, "Day 5 - part 2")

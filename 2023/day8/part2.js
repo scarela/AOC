@@ -41,7 +41,7 @@ dayWrapper(() => {
     }
 
     return counts;
-});
+}, "Day 8 - part 2");
 
 /**
  * LCM should be applied to the results array to 

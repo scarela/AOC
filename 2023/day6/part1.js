@@ -23,4 +23,4 @@ dayWrapper(() => {
 
         return waysToWin * (end - start + 1);
     }, 1)
-})
+}, "Day 6 - part 1")

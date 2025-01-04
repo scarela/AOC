@@ -13,23 +13,24 @@ ZZZ = (ZZZ, ZZZ)`;
 const { data } = useData(testData);
 
 dayWrapper(() => {
-    let current = '';
+    let current = 'AAA';
     let count = 0;
 
-    const directions = data.split('\n\n')[0].split('');
-    const dict = data.split('\n\n')[1].split('\n').filter(l => !!l).reduce((acc, line) => {
-        const [label, L, R] = Array.from(line.matchAll(/(\w+)/g), m => m[0]);
-        return acc.set(label, { L, R });
-    }, new Map())
+    const [dir, letters] = data.split('\n\n');
+    const directions = dir.split('');
+    const dict = letters.split('\n')
+        .filter(l => !!l)
+        .reduce((acc, line) => {
+            const [label, L, R] = [...line.match(/\w+/g)];
+            return acc.set(label, { L, R });
+        }, new Map())
 
     while (current !== 'ZZZ') {
-        const options = dict.get(count === 0 ? 'AAA' : current);
-        const localCount = count >= directions.length ? count % directions.length : count;
-        const direction = directions[localCount];
+        const next_dir = directions[count % directions.length];
 
-        current = options[direction];
+        current = dict.get(current)[next_dir];
         count++;
     }
 
     return count;
-})
+}, "Day 8 - part 1")

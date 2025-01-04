@@ -68,4 +68,5 @@ dayWrapper(() => data.split('\n').filter(l => !!l)
 
         return categories[hand1] - categories[hand2];
     })
-    .reduce((acc, line, index, ary) => acc + (+line.split(' ')[1] * (index + 1)), 0))
+    .reduce((acc, line, index, ary) => acc + (+line.split(' ')[1] * (index + 1)), 0)
+, "Day 7 - part 1")

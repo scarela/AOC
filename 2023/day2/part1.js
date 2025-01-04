@@ -22,4 +22,4 @@ dayWrapper(() => data.split('\n')
       .some(([_, val, color]) => +val > CUBELIMITS[color]);
   })
   .reduce((acc, game) => acc + +game.match(/\d+/), 0)
-);
+, "Day 2 - part 1");

@@ -90,7 +90,7 @@ dayWrapper(() => data.split('\n').filter(l => !!l)
         return HAND_RANK[hand1] - HAND_RANK[hand2]; //Compare hand rank values
     })
     .reduce((acc, line, index, ary) => acc + (+line.split(' ')[1] * (index + 1)), 0)
-)
+, "Day 7 - part 2")
 
 //249405876 too high
 //249356515 ✅

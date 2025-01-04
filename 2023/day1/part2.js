@@ -28,4 +28,4 @@ dayWrapper(() => {
 
       return acc + +(n1 + n2);
     }, 0)
-})
+}, "Day 1 - part 2")

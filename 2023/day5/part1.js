@@ -62,4 +62,4 @@ dayWrapper(() => {
   });
 
   return Math.min(...locations);
-})
+}, "Day 5 - part 1")
