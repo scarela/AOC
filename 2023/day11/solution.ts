@@ -1,73 +1,72 @@
 import { file, resolveSync } from "bun";
 
-const data = await file(resolveSync("./input", import.meta.dir)).text();
+const data = (await file(resolveSync("./input", import.meta.dir)).text()).trim();
 // const data = (await file(resolveSync("./input.test", import.meta.dir)).text()).trim();
 
-function expandUniverse(universe_str: string, expantion: number) {
+function expandUniverse(universe_str: string) {
   const grid = universe_str.split('\n').map(l => [...l])
-  let colIndex = 0;
-  let rowIndex = 0;
+  const points: [number, number][] = [];
+  const expandedRows: number[] = [];
+  let expandedColumns: number[] = Array(grid[0].length).fill(0);
 
-  while (rowIndex < grid.length) {
-    if (grid[rowIndex].indexOf('#') < 0) {
-      grid.splice(rowIndex, 0, [...grid[rowIndex]]);
-      rowIndex++;
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i].indexOf('#') === -1) {
+      expandedRows.push(i);
     }
-    rowIndex++;
-  }
 
-  while (colIndex < grid[0].length) {
-    const set = new Set();
-
-    grid.forEach(row => set.add(row[colIndex]));
-
-    if (!set.has('#')) {
-      for (let row of grid.keys()) grid[row].splice(colIndex, 0, '.');
-      colIndex++;
-    }
-    colIndex++;
-  }
-
-  return grid
-}
-
-const getPoits = (grid: string[][]) => {
-  return grid.reduce(
-    (acc: [number, number][], l, row) => {
-      for (let col of l.keys()) {
-        if (l[col] === '#') acc.push([row, col]);
+    for (let j = 0; j < grid[0].length; j++) {
+      if (grid[i][j] === '#') {
+        expandedColumns[j]++;
+        points.push([i, j]);
       }
-      return acc;
-    }, []);
+    }
+  }
+
+  expandedColumns = expandedColumns.map((x, i) => !x ? i : NaN).filter(Boolean)
+
+  return [points, expandedRows, expandedColumns] as const;
 }
 
-const computeTaxyCabDistances = (points: number[][]) => {
+// https://en.wikipedia.org/wiki/Taxicab_geometry
+const computeTaxyCabDistances = (
+  points: [number, number][],
+  exp_rows: number[],
+  exp_col: number[],
+  expansion: number,
+) => {
   let result = 0;
 
   for (let i = 0; i < points.length; i++) {
     for (let j = i + 1; j < points.length; j++) {
-      const [x1, y1] = points[i];
-      const [x2, y2] = points[j];
-      result += Math.abs(x2 - x1) + Math.abs(y2 - y1);
+      const [row1, col1] = points[i];
+      const [row2, col2] = points[j];
+      let row_minmax = [row1, row2];
+      let [cmin, cmax] = Math.min(col1, col2) === col1 ? [col1, col2] : [col2, col1];
+      let in_row_range = countInRage(row_minmax, exp_rows) * (expansion - 1); // why do we need to -1 expansion?
+      let in_col_range = countInRage([cmin, cmax], exp_col) * (expansion - 1);
+      
+      //add expansion calculation to each max
+      result += Math.abs((in_row_range + row2) - row1) + Math.abs((in_col_range + cmax) - cmin);
     }
   }
 
   return result;
 }
 
-function part1() {
-  const grid = expandUniverse(data, 2);
-  const points = getPoits(grid);
-
-  return computeTaxyCabDistances(points);
+const countInRage = ([min, max]: number[], range: number[]) => {
+  return range.filter(n => min < n && n < max).length
 }
 
-console.log("Day 11 - Part 1:", part1());
+const [points, exp_rows, exp_col] = expandUniverse(data);
+
+function part1() {
+  return computeTaxyCabDistances(points, exp_rows, exp_col, 2);
+}
+
+console.log("Day 11 - Part 1:", part1()); //9274989
 
 function part2() {
-
-  return 0;
+  return computeTaxyCabDistances(points, exp_rows, exp_col, 1e6);
 }
 
-console.log("Day 11 - Part 2:", part2());
-
+console.log("Day 11 - Part 2:", part2()); //357134560737
