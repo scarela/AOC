@@ -42,7 +42,7 @@ const computeTaxyCabDistances = (
       const [row2, col2] = points[j];
       let row_minmax = [row1, row2];
       let [cmin, cmax] = Math.min(col1, col2) === col1 ? [col1, col2] : [col2, col1];
-      let in_row_range = countInRage(row_minmax, exp_rows) * (expansion - 1); // why do we need to -1 expansion?
+      let in_row_range = countInRage(row_minmax, exp_rows) * (expansion - 1); // why do we need to -1 expansion? I think this is to account for 0 indexed array
       let in_col_range = countInRage([cmin, cmax], exp_col) * (expansion - 1);
       
       //add expansion calculation to each max
