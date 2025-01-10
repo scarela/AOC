@@ -1,10 +1,11 @@
 // https://adventofcode.com/2019/day/6
+// inspired by https://0xdf.gitlab.io/adventofcode2019/6
 import { file, resolveSync } from "bun";
 
 const getData = async (path: string) => (await file(resolveSync(path, import.meta.dir)).text()).trim()
 
 const data = await getData("./input");
-// const data = await getData("./input.test");
+// const data = await getData("./inputp2.test");
 
 const orbits = data.split('\n').reduce((acc: Record<string, string[]>, line) => {
   const [orb1, orb2] = line.split(')');
@@ -13,10 +14,16 @@ const orbits = data.split('\n').reduce((acc: Record<string, string[]>, line) => 
   return acc;
 }, {});
 
+let p2Start = '';
 const orbitMap = data.split('\n')
-  .reduce((map: Map<string, string>, line) => {
+  .reduce((map: Map<string, Set<string>>, line) => {
     const [orb1, orb2] = line.split(')');
-    return map.set(orb2, orb1);
+    if (!map.get(orb1)) map.set(orb1, new Set());
+    if (!map.get(orb2)) map.set(orb2, new Set());
+    map.get(orb1)?.add(orb2);
+    map.get(orb2)?.add(orb1);
+    if (orb2 === 'YOU') p2Start = orb1;
+    return map;
   }, new Map())
 
 function countOrbits(orbit: string, count: number): number {
@@ -31,40 +38,23 @@ function part1() {
 
 console.log("Day 6 - Part 1:", part1()); //273985
 
+function findPath(orbit: string, prev: string[], count: number): number {
+  if (orbits[orbit]?.indexOf('SAN') >= 0) return count;
+
+  for (let orb of orbitMap.get(orbit)) {
+    if (prev.indexOf(orb) === -1) {
+      let val = findPath(orb, prev.concat(orb), count + 1);
+      if (val !== 0) {
+        return val;
+      }
+    }
+  }
+
+  return 0;
+}
+
 function part2() {
-  let fromYOU = orbitMap.get('YOU');
-  let fromSAN = orbitMap.get('SAN');
-  let youList: string[] = [];
-  let sanList: string[] = [];
-
-  while (fromYOU !== fromSAN) {
-    if (!!fromYOU && orbitMap.has(fromYOU)) {
-      youList.push(fromYOU);
-      fromYOU = orbitMap.get(fromYOU);
-    }
-    else fromYOU = null;
-
-    if (!!fromSAN && orbitMap.has(fromSAN)) {
-      sanList.push(fromSAN);
-      fromSAN = orbitMap.get(fromSAN);
-    }
-    else fromSAN = null;
-  }
-
-  let index = -1;
-  let targetYOU = 0;
-  let targetSAN = 0;
-
-  while (true) {
-    if (youList.at(index) !== sanList.at(index)) {
-      targetYOU = youList.indexOf(youList.at(index)!);
-      targetSAN = sanList.indexOf(sanList.at(index)!);
-      break;
-    }
-    index--;
-  }
-
-  return targetYOU + 1 + targetSAN + 1;
+  return findPath(p2Start, ["YOU"], 0);
 }
 
 console.log("Day 6 - Part 2:", part2()); //460
